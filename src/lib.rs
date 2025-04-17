@@ -1,6 +1,6 @@
 //! Provides a macro `assert_within!` for tests involving floating point numbers.
 //!
-//! ```rust
+//! ```rust ignore
 //! assert_within!(+0.001, val, target, "Value was not within additive 0.001: {more} {context}");
 //! assert_within!(~0.05, val, target, "Value was not within 5% of target: {additional} {information:?}");
 //! ```
@@ -111,17 +111,30 @@ pub fn assert_within_mul_impl<N: Display + FloatCore>(
     }
 
     let one_minus_eps = N::one() - *eps;
-    if *val < one_minus_eps * *target {
-        panic!(
-            "assert_within failed at {file}:{line}:\n`{val_str}` was less than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
-        );
-    }
-
     let one_plus_eps = N::one() + *eps;
-    if *val > one_plus_eps * *target {
-        panic!(
-            "assert_within failed at {file}:{line}:\n`{val_str}` was greater than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
-        );
+    if target.is_sign_positive() {
+        if *val < one_minus_eps * *target {
+            panic!(
+                "assert_within failed at {file}:{line}:\n`{val_str}` was less than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
+            );
+        }
+
+        if *val > one_plus_eps * *target {
+            panic!(
+                "assert_within failed at {file}:{line}:\n`{val_str}` was greater than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
+            );
+        }
+    } else {
+        if *val < one_plus_eps * *target {
+            panic!(
+                "assert_within failed at {file}:{line}:\n`{val_str}` was less than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
+            );
+        }
+        if *val > one_minus_eps * *target {
+            panic!(
+                "assert_within failed at {file}:{line}:\n`{val_str}` was greater than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
+            );
+        }
     }
 }
 
