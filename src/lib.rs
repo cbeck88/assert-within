@@ -1,7 +1,9 @@
 //! Provides a macro `assert_within!` for tests involving floating point numbers.
 //!
+//! ```rust
 //! assert_within!(+0.001, val, target, "Value was not within additive 0.001: {more} {context}");
 //! assert_within!(~0.05, val, target, "Value was not within 5% of target: {additional} {information:?}");
+//! ```
 //!
 //! Highlights include:
 //!
@@ -19,7 +21,7 @@ use core::{
     borrow::Borrow,
     fmt::{self, Display},
 };
-use num_traits::{float::FloatCore, NumRef};
+use num_traits::float::FloatCore;
 
 /// Helper for asserting that an f64 value is within +/- epsilon of another, additively
 #[doc(hidden)]
@@ -74,7 +76,7 @@ pub fn assert_within_add_impl<N: Display + FloatCore>(
 /// Helper for asserting that an f64 value is within +/- epsilon of another, multiplicatively
 #[doc(hidden)]
 #[allow(clippy::too_many_arguments)]
-pub fn assert_within_mul_impl<N: NumRef + Display + FloatCore>(
+pub fn assert_within_mul_impl<N: Display + FloatCore>(
     file: &'static str,
     line: u32,
     val: impl Borrow<N>,
@@ -109,14 +111,14 @@ pub fn assert_within_mul_impl<N: NumRef + Display + FloatCore>(
     }
 
     let one_minus_eps = N::one() - *eps;
-    if *val < one_minus_eps * target {
+    if *val < one_minus_eps * *target {
         panic!(
             "assert_within failed at {file}:{line}:\n`{val_str}` was less than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
         );
     }
 
     let one_plus_eps = N::one() + *eps;
-    if *val > one_plus_eps * target {
+    if *val > one_plus_eps * *target {
         panic!(
             "assert_within failed at {file}:{line}:\n`{val_str}` was greater than (1 ± {eps}) * `{target_str}`\nleft:  {val}\nright: {target}\n{context}"
         );
