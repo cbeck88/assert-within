@@ -128,7 +128,7 @@ pub fn assert_within_mul_impl<N: Display + FloatCore>(
 #[macro_export]
 macro_rules! assert_within {
     (+ $epsilon:expr, $val:expr, $target:expr) => {
-        $crate::test_utils::assert_within_add_impl(
+        $crate::assert_within_add_impl(
             file!(),
             line!(),
             $val,
@@ -141,7 +141,7 @@ macro_rules! assert_within {
     };
 
     (+ $epsilon:expr, $val:expr, $target:expr, $($fmt_args:tt)*) => {
-        $crate::test_utils::assert_within_add_impl(
+        $crate::assert_within_add_impl(
             file!(),
             line!(),
             $val,
@@ -154,7 +154,7 @@ macro_rules! assert_within {
     };
 
     (~ $epsilon:expr, $val:expr, $target:expr) => {
-        $crate::test_utils::assert_within_mul_impl(
+        $crate::assert_within_mul_impl(
             file!(),
             line!(),
             $val,
@@ -167,7 +167,7 @@ macro_rules! assert_within {
     };
 
     (~ $epsilon:expr, $val:expr, $target:expr, $($fmt_args:tt)*) => {
-        $crate::test_utils::assert_within_mul_impl(
+        $crate::assert_within_mul_impl(
             file!(),
             line!(),
             $val,
